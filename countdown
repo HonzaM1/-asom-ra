@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Časomíra s textovým polem</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+        .countdown {
+            font-size: 12vw;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .message {
+            margin: 20px 0;
+            font-size: 8vw;
+            font-family: 'Arial', sans-serif;
+        }
+        .part1 { color: #FF0000; } /* Červená pro "INN" */
+        .part2 { color: #00FF00; } /* Zelená pro "RE" */
+        .part3 { color: #0000FF; } /* Modrá pro "PO" */
+        @keyframes blink {
+            0% { background-color: transparent; }
+            50% { background-color: red; }
+            100% { background-color: transparent; }
+        }
+        .blink {
+            animation: blink 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="message" id="message">Připrav se!</div>
+    <div class="countdown" id="time">01:20</div>
+    <script>
+        function startCountdown(duration, display, message) {
+            var timer = duration, minutes, seconds;
+            var interval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (timer > 60) {
+                    message.innerHTML = '<span class="part1">INN</span><span class="part2">RE</span><span class="part3">PO</span>';
+                } else if (timer <= 60 && timer > 30) {
+                    message.textContent = "Poslední minuta";
+                } else if (timer <= 30 && timer > 10) {
+                    message.textContent = "Kluci, už máte jen chvilku...!";
+                    display.classList.add("blink");
+                } else if (timer <= 10) {
+                    message.textContent = "Děleeeeeeej!";
+                }
+
+                if (--timer < 0) {
+                    clearInterval(interval); // Zastaví interval
+                    display.textContent = "00:00";
+                    display.classList.remove("blink"); // Odeber blikání
+                    message.textContent = "Přenechej slovo druhým...!";
+                }
+            }, 1000);
+        }
+
+        window.onload = function () {
+            var duration = 80; // Nastavení délky na 80 vteřin
+            var display = document.querySelector('#time');
+            var message = document.querySelector('#message');
+            startCountdown(duration, display, message);
+        };
+    </script>
+</body>
+</html>
